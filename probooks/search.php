@@ -89,7 +89,7 @@ if (!isset($username) or !isset($access_token) or !isset($id)) {
                 <td class='book-data text-align-left vertical-align-top'>
                   <p class='title-book text-orange'>{{book.judul}}</p>
                   <p class='author-book'>
-                  {{printAuthor(book.penulis)}} - {{book.rating}}/5.0 ({{book.votesCount}} votes)
+                  {{printAuthor(book.penulis)}} - {{book.rating ? (book.rating | number:1) : '0.0' }}/5.0 ({{book.votesCount}} votes)
                   </p>
                   <p class='desc-book'>{{book.sinopsis}}</p>
                 </td>

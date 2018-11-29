@@ -30,12 +30,32 @@ angular.module('probookApp', [])
           console.log('done');
           console.log(probook.books);
           document.getElementById("loader").style.display = "none";
+          probook.getrate();
           $scope.$apply();
          }
         };
       xhttp.open("POST", "./soapclient.php", true);
       xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       xhttp.send("judul="+probook.searchTerm);
+    }
+
+    probook.getrate = function(){
+      probook.books.forEach(function(book) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+          if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+            json = JSON.parse(this.responseText);
+            console.log(json);
+            book.rating = json['avg_rating'];
+            book.votesCount = json['cnt'];
+          }
+          $scope.$apply();   
+        };
+        xhttp.open("POST", "./utils/getrate.php", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("idbook="+book.id);  
+      });
     }
 
     // probook.getDetails = function(id){
