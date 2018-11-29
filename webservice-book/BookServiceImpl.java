@@ -390,15 +390,23 @@ public class BookServiceImpl implements BookService {
 	};
 
 	@Override
-	public String getRecommendation(String kategori){
-		String query = String.format("SELECT orders.orderid, orders.bookid, orders.kategori, orders.total FROM (SELECT *, sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) orders WHERE orders.total = (SELECT Max(total) FROM(SELECT sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) jumlahbook)" , kategori, kategori);
+	public String getRecommendation(String[] kategori){
+		// String query = String.format("SELECT orders.orderid, orders.bookid, orders.kategori, orders.total FROM (SELECT *, sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) orders WHERE orders.total = (SELECT Max(total) FROM(SELECT sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) jumlahbook)" , kategori, kategori);
+		String query = "SELECT idbook FROM kategori NATURAL JOIN penjualan WHERE ";
+		for(int i = 0; i < kategori.length; i++){
+			if(i != kategori.length - 1){
+				query += "kat = '" + kategori[i] + "' or ";
+			} else {
+				query += "kat = '" + kategori[i] + "' ";
+			}
+		}
+		query += "GROUP BY idbook ORDER BY totalpenjualan"; 
+		System.out.println(query);
 		// SELECT distinct idbook, totalpenjualan 
 		// FROM book.penjualan natural join book.kategori 
 		// WHERE kat LIKE "%Fiction%" ORDER BY totalpenjualan desc
 		// LIMIT 1; 
-		int orderid;
 		String idbook = "0";
-		int total;
 		try{  
       Class.forName("com.mysql.cj.jdbc.Driver");  
       Connection con = DriverManager.getConnection(
@@ -407,13 +415,9 @@ public class BookServiceImpl implements BookService {
 			);   
       Statement stmt = con.createStatement();  
       ResultSet rs = stmt.executeQuery(query);
-      while(rs.next()){
-				orderid = rs.getInt(1);
-				idbook = rs.getString(2);
-				kategori = rs.getString(3);
-				total = rs.getInt(4);
-				System.out.println(orderid + "  " + idbook + "  " + kategori + " " + total);
-			}
+			rs.next();
+			idbook = rs.getString(1);
+			System.out.println("Rekomendasi: " + idbook);
       con.close();  
     }catch(Exception e){System.out.println(e);}
 		return idbook;

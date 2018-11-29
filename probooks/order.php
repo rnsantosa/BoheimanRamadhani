@@ -134,6 +134,8 @@
               insertOrder($con, $username, $bookid, $_POST['selected']);
           }
 
+          $kategories = $detail['kategori'];
+
           echo "
               <table class='desc-book'>
               <tr>
@@ -141,7 +143,16 @@
                       <h2 class='text-orange'>{$detail['judul']}</h2>
                       <div class='author'>{$detail['penulis']}</div>
                       <div class='desc'>{$detail['sinopsis']}</div><br>
-                      <a class='kategori'> Kategori: </a> {$detail['kategori']} <br>
+                      <a class='kategori'> Kategori: </a>
+                      <ul> 
+          ";
+          
+          for ($x = 0; $x < count($kategories); $x++) {
+            echo "
+                        <li>{$kategories[$x]}</li> 
+            ";
+          }  
+          echo "      </ul>
                       <a class='harga'> Harga: Rp {$detail['harga']} </a><br>
                   </td>
                   <td class='picture'>
@@ -198,29 +209,53 @@
       ?>
 
     <h3>Recommended</h5>
+    <?php
+      $options = array(
+        'uri'=>'http://schemas.xmlsoap.org/soap/envelope/',
+        'style'=>SOAP_RPC,
+        'use'=>SOAP_ENCODED,
+        'soap_version'=>SOAP_1_1,
+        'cache_wsdl'=>WSDL_CACHE_NONE,
+        'connection_timeout'=>15,
+        'trace'=>true,
+        'encoding'=>'UTF-8',
+        'exceptions'=>true,
+      );
+      $client = new SoapClient("http://localhost:8888/service/transaksi?wsdl", $options);
+      $params = array(
+        "arg0" => $detail['kategori']
+      );
+      $response = $client->__soapCall("getRecommendation", $params);
+      var_dump($response);
+    ?>
+
+
+
+
+
     <p>Ninja Saga</p>
     <h3>Reviews</h3>
 
     <?php
-        while ($row_review = mysqli_fetch_assoc($res_review)) {
-            echo "
-                <table>
-                <tr>
-                    <td>
-                        <img src={$row_review['image']} class='img-left'>
-                    </td>
-                    <td class='desc-review'>
-                        <div class='uname'>@{$row_review['username']}</div>
-                        <div class='rev'>{$row_review['content']}</div>
-                    </td>
-                    <td class='user-rating'>
-                        <img src='public/img/star-active.png' class='star-one'>
-                        <center><b>" . number_format($row_review['rating'], 1). " / 5.0</b></center>
-                    </td>
-                </tr>
-                </table>
-            ";
-        }
+      while ($row_review = mysqli_fetch_assoc($res_review)) {
+        echo "
+          <table>
+            <tr>
+              <td>
+                <img src={$row_review['image']} class='img-left'>
+              </td>
+              <td class='desc-review'>
+                <div class='uname'>@{$row_review['username']}</div>
+                <div class='rev'>{$row_review['content']}</div>
+              </td>
+              <td class='user-rating'>
+                <img src='public/img/star-active.png' class='star-one'>
+                <center><b>" . number_format($row_review['rating'], 1). " / 5.0</b></center>
+              </td>
+            </tr>
+          </table>
+        ";
+      }
     ?>
 
     <script>
