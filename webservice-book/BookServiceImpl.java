@@ -24,7 +24,7 @@ public class BookServiceImpl implements BookService {
 		Book b = new Book();
 		try{  
 			String query = String.format("SELECT idbook, harga, kat FROM penjualan NATURAL JOIN kategori WHERE idbook='%s'", idbook);
-     // Class.forName("com.mysql.cj.jdbc.Driver");  
+      Class.forName("com.mysql.cj.jdbc.Driver");  
       Connection conDB = DriverManager.getConnection(
 				"jdbc:mysql://localhost:3306/book",
 				"root",""
@@ -219,10 +219,28 @@ public class BookServiceImpl implements BookService {
   			books_saved = books_count + 1;
   		}
   		for (int i = 0; i < books_saved; i++) {  
+				String query2 ="INSERT INTO penjualan(idbook, harga, totalpenjualan) VALUES(?, ?, ?)";
+				System.out.println(query2);
+				try{  
+					Class.forName("com.mysql.cj.jdbc.Driver");  
+					Connection conDB = DriverManager.getConnection(
+						"jdbc:mysql://localhost:3306/book",
+						"root",""
+					);   
+					PreparedStatement preparedStmt = conDB.prepareStatement(query2);
+					preparedStmt.setString(1, books[i].getId());
+					preparedStmt.setFloat(2, books[i].getHarga());
+					preparedStmt.setInt(3, 0);
+					preparedStmt.execute();
+					conDB.close();  
+				}catch(Exception e){
+					System.out.println(e);
+				}
+				
 				String query1 ="INSERT INTO kategori(idbook, kat) VALUES(?, ?)";
 				System.out.println(query1);
 				try{  
-					//Class.forName("com.mysql.cj.jdbc.Driver");  
+					Class.forName("com.mysql.cj.jdbc.Driver");  
 					Connection conDB = DriverManager.getConnection(
 						"jdbc:mysql://localhost:3306/book",
 						"root",""
@@ -237,24 +255,6 @@ public class BookServiceImpl implements BookService {
 				}catch(Exception e){
 					System.out.println(e);
 				}	
-
-  				String query2 ="INSERT INTO penjualan(idbook, harga, totalpenjualan) VALUES(?, ?, ?)";
-				System.out.println(query2);
-				try{  
-					//Class.forName("com.mysql.cj.jdbc.Driver");  
-					Connection conDB = DriverManager.getConnection(
-						"jdbc:mysql://localhost:3306/book",
-						"root",""
-					);   
-					PreparedStatement preparedStmt = conDB.prepareStatement(query2);
-					preparedStmt.setString(1, books[i].getId());
-					preparedStmt.setFloat(2, books[i].getHarga());
-					preparedStmt.setInt(3, 0);
-					preparedStmt.execute();
-					conDB.close();  
-				}catch(Exception e){
-					System.out.println(e);
-				}
   		}
   		return books;
   }
@@ -382,7 +382,7 @@ public class BookServiceImpl implements BookService {
 		String idbook = "0";
 		int total;
 		try{  
-    //  Class.forName("com.mysql.cj.jdbc.Driver");  
+      Class.forName("com.mysql.cj.jdbc.Driver");  
       Connection con = DriverManager.getConnection(
 				"jdbc:mysql://localhost:3306/book",
 				"root",""
