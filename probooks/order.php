@@ -20,6 +20,34 @@
     }
 ?>
 
+<?php
+    $servername = "localhost";
+    $userdb = "root";
+    $password = "";
+    $dbname = "probooks";
+    
+    // Create connection
+    $conn = new mysqli($servername, $userdb, $password, $dbname);
+    $cardnumber;
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+    $sql = "SELECT cardnumber FROM user WHERE username='$username'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        // output data of each row
+        while($row = $result->fetch_assoc()) {
+            $cardnumber = $row["cardnumber"];
+        }
+        echo($row["cardnumber"]);
+
+    } else {
+        echo "0 results";
+    }
+    $conn->close();
+?>
+
 <!DOCTYPE html>
     <html>
         <head>
@@ -145,7 +173,7 @@
                             <option value='5'>5</a>
                         </select>
                         <br>
-                        <button id='myBtn' type='button' onclick='{order($bookid)}'>Order</button>
+                        <button id='myBtn' type='button' onclick='order(\"$bookid\")'>Order</button>
                         <br>
                         <div id='MyBtn'>
                             <div id='myModal' class='modal'>
@@ -214,62 +242,35 @@
                         }
                         var e = document.getElementById("dropdown");
                         var quantity = encodeURIComponent(e.options[e.selectedIndex].value);
-
-                        <?php 
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "";
-                        $dbname = "probooks"
-                        
-                        // Create connection
-                        $conn = new mysqli($servername, $username, $password, $dbname);
-                        $cardnumber;
-                        // Check connection
-                        if ($conn->connect_error) {
-                            die("Connection failed: " . $conn->connect_error);
-                        } 
-
-                        $sql = "SELECT cardnumber FROM user WHERE username=" . $username;
-                        $result = $conn->query($sql);
-                        if ($result->num_rows > 0) {
-                            // output data of each row
-                            while($row = $result->fetch_assoc()) {
-                                $cardnumber = .$row["cardnumber"];
-                            }
-                        } else {
-                            echo "0 results";
-                        }
-                        $conn->close();
-                        ?>
-
                         var url="soapclient.php";
-                        var param = "idbook=" +  id   "quantity=" + quantity +"&nomorPengirim=" + <?php $cardnumber  ?>;
+                        var param = "idbook=" + id + "&quantity=" + quantity +"&nomorPengirim=" + <?php echo($cardnumber);  ?>;
                         xmlhttp.open("POST", url, true);
-
                         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                        xmlhttp.setRequestHeader("Content-length", param.length);
-                        xmlhttp.setRequestHeader("Connection", "close");
-
                         xmlhttp.onreadystatechange = function() {
                             if (this.readyState == 4 && this.status == 200) {
-                                // alert(xmlhttp.responseText);
-                                var modal = document.getElementById("myModal");
-                                var btn = document.getElementById("MyBtn");
-                                var span = document.getElementsByClassName("close")[0];
-                                modal.style.display = "block";
-                                                            
-                                span.onclick = function() {
-                                    modal.style.display = "none";
-                                }
-                                window.onclick = function(event) {
-                                    if (event.target == modal) {
+                                console.log(xmlhttp.responseText);
+                                if(xmlhttp.responseText == true){
+                                    var modal = document.getElementById("myModal");
+                                    var btn = document.getElementById("MyBtn");
+                                    var span = document.getElementsByClassName("close")[0];
+                                    modal.style.display = "block";                                                    
+                                    span.onclick = function() {
                                         modal.style.display = "none";
                                     }
+                                    window.onclick = function(event) {
+                                        if (event.target == modal) {
+                                            modal.style.display = "none";
+                                        }
+                                    }
+                                } else {
+                                    console.log("transaksi gagal bos");
                                 }
                             }
                         }
                         xmlhttp.send(param)
                     }
+
+
                 </script>
             </div>
         </body>
