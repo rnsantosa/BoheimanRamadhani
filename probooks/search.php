@@ -4,14 +4,13 @@
     
     require_once 'utils/validate-session.php';
 
-
     // Get data from cookie
     $username = $_COOKIE['username'];
     $access_token = $_COOKIE['access_token'];
     
     validate($access_token, $username, null);
-    checkSession();
-
+    // checkSession();
+    
     setcookie('access_token', $access_token, time() + 600, '/');
     setcookie('username', $username, time() + 600, '/');
 ?>

@@ -1,5 +1,6 @@
 <?php 
     function validate($access_token, $username, $action) {
+        
         // Get current session data
         $browser = $_SERVER['HTTP_USER_AGENT'];
         $ip = $_SERVER['REMOTE_ADDR'];
@@ -16,6 +17,7 @@
         
         if ($execute) {
             $result = $execute->fetch_assoc(); 
+            
             // Get session data from database
             $session_db = $result['session_id'];
             $username_db = $result['username'];
@@ -24,9 +26,9 @@
             $expire_db = $result['expire_time'];
 
             //Validation
-            if ($session_db === $access_token and $username_db === $username and $browser_db === $browser
-                and $ip_db === $ip) {
-                if ($expire < (float)$expire_db) {
+            if (($session_db === $access_token) and ($username_db === $username) and ($browser_db === $browser)
+                and ($ip_db === $ip)) {
+                if ($expire < $expire_db) {
                     if (isset($action)) {
                         header("Location: $action");
                     }
@@ -35,7 +37,7 @@
                 }
                 // do nothing
             } else {
-                deleteCookies();                
+                deleteCookies();  
                 header('Location: ../login.php');
                 exit();
             }
