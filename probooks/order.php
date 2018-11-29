@@ -236,7 +236,6 @@
                     }
 
                     function order(id) {
-                        
                         if (!xmlhttp) {
                             var xmlhttp = new XMLHttpRequest();
                         }
@@ -250,6 +249,7 @@
                             if (this.readyState == 4 && this.status == 200) {
                                 console.log(xmlhttp.responseText);
                                 if(xmlhttp.responseText == true){
+                                    addpembelian(idbook, quantity);
                                     var modal = document.getElementById("myModal");
                                     var btn = document.getElementById("MyBtn");
                                     var span = document.getElementsByClassName("close")[0];
@@ -270,7 +270,17 @@
                         xmlhttp.send(param)
                     }
 
-
+                    function addpembelian(idbook, quantity){
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function(){
+                            if (this.readyState == 4 && this.status == 200) {
+                                probooks.details = JSON.parse(this.responseText);
+                                }
+                            };
+                        xhttp.open("POST", "./soapclient.php", true);
+                        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        xhttp.send("idbook="+id+"&quantity="+quantity"&add=true");
+                    }
                 </script>
             </div>
         </body>

@@ -105,6 +105,24 @@ public class BookServiceImpl implements BookService {
 		}
   }
 
+	@Override
+	public void tambahpembelian(String idbook, int quantity){
+		String query = String.format("UPDATE penjualan SET totalpenjualan = totalpenjualan + %d WHERE idbook = '%s'", quantity, idbook);
+		System.out.println(query);
+		try{  
+			Class.forName("com.mysql.cj.jdbc.Driver");  
+			Connection conDB = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/book",
+				"root",""
+			);   
+			PreparedStatement preparedStmt = conDB.prepareStatement(query);
+			preparedStmt.execute();
+			conDB.close();  
+		}catch(Exception e){
+			System.out.println(e);
+		}
+	}
+
   @Override
 	public Book[] searchBook(String term) throws IOException{
     term = term.replace(" ", "+");
