@@ -18,7 +18,6 @@
     } else {
         header('Location: login.php');  
     }
-  
 ?>
 
 <!DOCTYPE html>
@@ -214,10 +213,37 @@
                             var xmlhttp = new XMLHttpRequest();
                         }
                         var e = document.getElementById("dropdown");
-                        var selected = encodeURIComponent(e.options[e.selectedIndex].value);
+                        var quantity = encodeURIComponent(e.options[e.selectedIndex].value);
 
-                        var url="order.php";
-                        var param = "selected=" + selected +"&bookid=" + id;
+                        <?php 
+                        $servername = "localhost";
+                        $username = "root";
+                        $password = "";
+                        $dbname = "probooks"
+                        
+                        // Create connection
+                        $conn = new mysqli($servername, $username, $password, $dbname);
+                        $cardnumber;
+                        // Check connection
+                        if ($conn->connect_error) {
+                            die("Connection failed: " . $conn->connect_error);
+                        } 
+
+                        $sql = "SELECT cardnumber FROM user WHERE username=" . $username;
+                        $result = $conn->query($sql);
+                        if ($result->num_rows > 0) {
+                            // output data of each row
+                            while($row = $result->fetch_assoc()) {
+                                $cardnumber = .$row["cardnumber"];
+                            }
+                        } else {
+                            echo "0 results";
+                        }
+                        $conn->close();
+                        ?>
+
+                        var url="soapclient.php";
+                        var param = "idbook=" +  id   "quantity=" + quantity +"&nomorPengirim=" + <?php $cardnumber  ?>;
                         xmlhttp.open("POST", url, true);
 
                         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

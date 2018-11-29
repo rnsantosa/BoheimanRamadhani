@@ -23,18 +23,18 @@ public class BookServiceImpl implements BookService {
 		//GET BOOK DETAILS
 		Book b = new Book();
 		try{  
-			String query = String.format("SELECT * FROM books WHERE id='%s'", idbook);
+			String query = String.format("SELECT idbook, harga, kat FROM penjualan NATURAL JOIN kategori WHERE idbook='%s'", idbook);
       Class.forName("com.mysql.cj.jdbc.Driver");  
       Connection conDB = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/bookservice",
+				"jdbc:mysql://localhost:3306/book",
 				"root",""
 			);   
       Statement stmt = conDB.createStatement();  
       ResultSet rs = stmt.executeQuery(query);
       while(rs.next()){
 				b.setId(rs.getString(1));
-				b.setKategori(rs.getString(2));
-				b.setHarga(rs.getFloat(3));
+				b.setHarga(rs.getFloat(2));
+				b.setKategori(rs.getString(3));
 			}
       conDB.close();  
     }catch(Exception e){System.out.println(e);}
@@ -69,30 +69,36 @@ public class BookServiceImpl implements BookService {
 				response.append(inputLine);
 			}
 			in.close();
-
-			// print result
-			System.out.println(response);
-			if(response.toString().equals("true")){
-				// Insert to DB successfull
-				String query ="INSERT INTO orderbook(bookid, kategori, jumlah)" + "VALUES(?, ?, ?)";
-				System.out.println(query);
-				try{  
-					Class.forName("com.mysql.cj.jdbc.Driver");  
-					Connection conDB = DriverManager.getConnection(
-						"jdbc:mysql://localhost:3306/bookservice",
-						"root",""
-					);   
-					PreparedStatement preparedStmt = conDB.prepareStatement(query);
-					preparedStmt.setString(1, b.getId());
-					preparedStmt.setString(2, b.getKategori());
-					preparedStmt.setFloat(3, quantity);
-					preparedStmt.execute();
-					conDB.close();  
-				}catch(Exception e){System.out.println(e);}				
+			System.out.println(response.toString());
+			if( response.toString().equals("true")){
+				return true;
 			}else{
-				
+				return false;
 			}
-      return true;
+			// masukin order yang sukses ke db book
+			// // print result
+			// System.out.println(response);
+			// if(response.toString().equals("true")){
+			// 	// Insert to DB successfull
+			// 	String query ="INSERT INTO orderbook(bookid, kategori, jumlah)" + "VALUES(?, ?, ?)";
+			// 	System.out.println(query);
+			// 	try{  
+			// 		Class.forName("com.mysql.cj.jdbc.Driver");  
+			// 		Connection conDB = DriverManager.getConnection(
+			// 			"jdbc:mysql://localhost:3306/bookservice",
+			// 			"root",""
+			// 		);   
+			// 		PreparedStatement preparedStmt = conDB.prepareStatement(query);
+			// 		preparedStmt.setString(1, b.getId());
+			// 		preparedStmt.setString(2, b.getKategori());
+			// 		preparedStmt.setFloat(3, quantity);
+			// 		preparedStmt.execute();
+			// 		conDB.close();  
+			// 	}catch(Exception e){System.out.println(e);}				
+			// }else{
+				
+			// }
+      // return true;
 		} else {
 			System.out.println("POST request not worked");
       return false;
@@ -317,7 +323,7 @@ public class BookServiceImpl implements BookService {
 		try{  
       Class.forName("com.mysql.cj.jdbc.Driver");  
       Connection con = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/bookservice",
+				"jdbc:mysql://localhost:3306/book",
 				"root",""
 			);   
       Statement stmt = con.createStatement();  
