@@ -161,6 +161,28 @@
                       <br>
           ";
 
+          // get real rating
+          $servername = "localhost";
+          $userdb = "root";
+          $password = "";
+          $dbname = "probooks";
+          
+          // Create connection
+          $conn = new mysqli($servername, $userdb, $password, $dbname);
+          // Check connection
+          if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+          }
+          $sql = "SELECT AVG(rating) avg_rating FROM review join ordering on review.orderid = ordering.id WHERE bookid = '$bookid' GROUP BY bookid";
+          $result = $conn->query($sql);
+          if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $detail['rating'] = $row['avg_rating'];
+          } else {
+            $detail['rating'] = '0.0';
+          }
+          $conn->close();  
+
           for ($x = 0; $x < floor($detail['rating']); $x++) {
               echo "<img src='public/img/{$star_yellow}' class='star'>";
           }
@@ -171,7 +193,7 @@
 
           echo "   
                       <br>
-                      <center><b>{$detail['rating']} / 5.0</b></center>
+                      <center><b>". number_format($detail['rating'], 1, '.', ''). "/ 5.0</b></center>
                   </td>
               </tr>
               </table>

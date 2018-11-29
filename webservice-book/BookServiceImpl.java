@@ -406,7 +406,7 @@ public class BookServiceImpl implements BookService {
 		// FROM book.penjualan natural join book.kategori 
 		// WHERE kat LIKE "%Fiction%" ORDER BY totalpenjualan desc
 		// LIMIT 1; 
-		String idbook = "0";
+		String idbook = "CcFNCgAAQBAJ";
 		try{  
       Class.forName("com.mysql.cj.jdbc.Driver");  
       Connection con = DriverManager.getConnection(
