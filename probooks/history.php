@@ -1,29 +1,30 @@
 <?php
+require_once 'utils/validate-session.php';
 
 // check whether user is already logged in or not
 // $config = include '/config/db.php';
 $username = $_COOKIE['username'];
 $access_token = $_COOKIE['access_token'];
-$id = $_COOKIE['id'];
 
-if ($id == $access_token.$username) {
-    $config = include 'config/db.php';
-    $conn = mysqli_connect($config['host'], $config['username'], $config['password'], $config['db_name']);
-        if (!$conn) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-    
-    $query = "SELECT ordering.id, bookid, username, count, date, IF(ISNULL(review.id), 0, 1) as reviewed
-        FROM ordering
-	    left join review on ordering.id=review.orderid
-        WHERE username=\"$username\"
-        ORDER BY id desc";
+$config = include 'config/db.php';
+$conn = mysqli_connect($config['host'], $config['username'], $config['password'], $config['db_name']);
+    if (!$conn) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
-    $result = mysqli_query($conn, $query);
-} else {
-    //redirect to login page
-    header('Location: login.php');
-}
+validate($access_token, $username, null);
+checkSession();
+
+setcookie('access_token', $access_token, time() + 600, '/');
+setcookie('username', $username, time() + 600, '/');
+
+$query = "SELECT ordering.id, bookid, username, count, date, IF(ISNULL(review.id), 0, 1) as reviewed
+    FROM ordering
+    left join review on ordering.id=review.orderid
+    WHERE username=\"$username\"
+    ORDER BY id desc";
+
+$result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>

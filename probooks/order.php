@@ -1,23 +1,24 @@
 <?php
-  $username = $_COOKIE['username'];
-  $access_token = $_COOKIE['access_token'];
-  $id = $_COOKIE['id'];
+    require_once 'utils/validate-session.php';    
 
-  if (!isset($username) or !isset($access_token) or !isset($id)) {
-    // check if variables not null, if null redirect to login
-    header('Location: login.php');
-  } elseif ($id == $access_token.$username) {
+    $username = $_COOKIE['username'];
+    $access_token = $_COOKIE['access_token'];
+
+    validate($access_token, $username, null);
+    checkSession();
+    
+    setcookie('access_token', $access_token, time() + 600, '/');
+    setcookie('username', $username, time() + 600, '/');
+
     // check if id = access_token + username
     // true: do task
     // false: redirect to login
     if (isset($_POST['bookid'])) {
-      $bookid = $_POST['bookid'];            
+        $bookid = $_POST['bookid'];            
     } else {
-      $bookid = $_GET['bookid'];
+        $bookid = $_GET['bookid'];
     }
-  } else {
-    header('Location: login.php');  
-  }
+    
 ?>
 
 <?php

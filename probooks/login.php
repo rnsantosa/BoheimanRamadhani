@@ -1,13 +1,16 @@
 <?php
-
-    if (isset($_COOKIE['username']) and isset($_COOKIE['access_token']) and isset($_COOKIE['id'])) {
-        header('Location: search.php');  
-    }
+    ob_start();
+    require_once 'utils/validate-session.php';
+    // if token ter validasi
 
     $con = mysqli_connect("localhost","root","","probooks");
 
     if (mysqli_connect_errno()) {
         echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    }
+
+    if (isset($_COOKIE['username']) and isset($_COOKIE['access_token'])) {
+        validate($_COOKIE['access_token'], $_COOKIE['username'], 'search.php');
     }
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
@@ -19,11 +22,26 @@
         $result = mysqli_query($con, $sql);
 
         if (mysqli_num_rows($result) == 1) {
+            
             $access_token = bin2hex(random_bytes(16));
-            setcookie('username', $_POST['username'], false, '/');
-            setcookie('access_token', $access_token, false, '/');
-            setcookie('id', $access_token.$_POST['username'], time() + 3600, '/');
-            header('Location: search.php');
+            $browser = $_SERVER['HTTP_USER_AGENT'];
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $expire = microtime(true) + 3600;
+            
+            $insert_session_query = "INSERT INTO probooks.session (session_id, username, browser, ip_adress, expire_time) VALUES ('$access_token', '$get_username', '$browser', '$ip', '$expire')";
+            $session = mysqli_query($con, $insert_session_query);
+            
+            setcookie('access_token', $access_token, time() + 600, '/');
+            setcookie('username', $_POST['username'], time() + 600, '/');
+            
+            if ($session) {
+                header('Location: search.php');
+                exit();
+            } else {
+                echo("Insert gagal");
+            }
+            
+            exit;
         } else {
             echo '<script>alert("Wrong username or password");</script>';
         }                   

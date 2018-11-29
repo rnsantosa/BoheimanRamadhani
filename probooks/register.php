@@ -1,9 +1,15 @@
 <?php
+    require_once 'utils/validate-session.php';
+
+    // Get data from cookie
+    $username = $_COOKIE['username'];
+    $access_token = $_COOKIE['access_token'];
     
-    if (isset($_COOKIE['username']) and isset($_COOKIE['access_token']) and isset($_COOKIE['id'])) {
-        header('Location: search.php');  
-    }
-        
+    validate($access_token, $username, 'search.php');
+    checkSession();
+
+    setcookie('access_token', $access_token, time() + 600, '/');
+    setcookie('username', $username, time() + 600, '/');
 ?>
 <!DOCTYPE html>
     <html>

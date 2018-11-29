@@ -1,20 +1,19 @@
 <?php
+    // check whether user is already logged in or not
+    // $config = include '/config/db.php';
+    
+    require_once 'utils/validate-session.php';
 
-// check whether user is already logged in or not
-// $config = include '/config/db.php';
-$username = $_COOKIE['username'];
-$access_token = $_COOKIE['access_token'];
-$id = $_COOKIE['id'];
 
-if (!isset($username) or !isset($access_token) or !isset($id)) {
-    // check if variables not null, if null redirect to login
-    header('Location: login.php');
-} elseif ($id == $access_token.$username) {
-    // do nothing
-} else {
-    //redirect to login page
-    header('Location: login.php');
-}
+    // Get data from cookie
+    $username = $_COOKIE['username'];
+    $access_token = $_COOKIE['access_token'];
+    
+    validate($access_token, $username, null);
+    checkSession();
+
+    setcookie('access_token', $access_token, time() + 600, '/');
+    setcookie('username', $username, time() + 600, '/');
 ?>
 <!DOCTYPE html>
 <html ng-app="probookApp">
