@@ -24,7 +24,7 @@ public class BookServiceImpl implements BookService {
 		Book b = new Book();
 		try{  
 			String query = String.format("SELECT idbook, harga, kat FROM penjualan NATURAL JOIN kategori WHERE idbook='%s'", idbook);
-      Class.forName("com.mysql.cj.jdbc.Driver");  
+     // Class.forName("com.mysql.cj.jdbc.Driver");  
       Connection conDB = DriverManager.getConnection(
 				"jdbc:mysql://localhost:3306/book",
 				"root",""
@@ -34,7 +34,7 @@ public class BookServiceImpl implements BookService {
       while(rs.next()){
 				b.setId(rs.getString(1));
 				b.setHarga(rs.getFloat(2));
-				b.setKategori(rs.getString(3));
+				//b.setKategori(rs.getString(3));
 			}
       conDB.close();  
     }catch(Exception e){System.out.println(e);}
@@ -136,6 +136,7 @@ public class BookServiceImpl implements BookService {
   		int books_count = json.getJSONArray("items").length();
   		Book[] books = new Book[books_count];
   		
+  		int kategori_count = 0;
   		for (int i = 0; i < books_count; i++) {
   			books[i] = new Book();
   			books[i].setId(json.getJSONArray("items").getJSONObject(i).getString("id"));
@@ -163,17 +164,29 @@ public class BookServiceImpl implements BookService {
   			}
   			
   			//kategori
+  			
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("categories")) {
- 				books[i].setKategori(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("categories").getString(0));
+  				JSONArray kategori_array = json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONArray("categories");
+  				kategori_count = kategori_array.length();
+  				String[] kategori = new String[kategori_array.length()];
+	  			for (int j = 0; j < kategori_array.length(); j++) {
+	  				kategori[j] = kategori_array.getString(j);
+	  			}
+	  			books[i].setKategori(kategori);  
+
   			} else {
-  				books[i].setKategori("Uncategorized");
+  				kategori_count = 1;
+  				String[] un_cat = new String[1];
+  				un_cat[0] = "Uncategorized";
+  				books[i].setKategori(un_cat);
   			}
+
 
   			//gambar
   			if (json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").has("imageLinks")) {
   				books[i].setGambar(json.getJSONArray("items").getJSONObject(i).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail"));
   			} else {
-  				books[i].setGambar("No Image");
+  				books[i].setGambar("public/img/default-cover.jpg");
   			}
 
   			//harga
@@ -197,9 +210,51 @@ public class BookServiceImpl implements BookService {
   				books[i].setRating(0);
   			}
 
-  			//kategori
-  			
+  		}
+ 
+  		int books_saved = 0;
+  		if ((books_count % 2) == 0) { //genap
+  			books_saved = books_count;
+  		} else { //ganjil
+  			books_saved = books_count + 1;
+  		}
+  		for (int i = 0; i < books_saved; i++) {  
+				String query1 ="INSERT INTO kategori(idbook, kat) VALUES(?, ?)";
+				System.out.println(query1);
+				try{  
+					//Class.forName("com.mysql.cj.jdbc.Driver");  
+					Connection conDB = DriverManager.getConnection(
+						"jdbc:mysql://localhost:3306/book",
+						"root",""
+					);   
+					PreparedStatement preparedStmt = conDB.prepareStatement(query1);
+					for (int j=0; j < kategori_count; j++) {
+						preparedStmt.setString(1, books[i].getId());
+						preparedStmt.setString(2, books[i].getKategori()[j]);
+						preparedStmt.execute();
+					}
+					conDB.close();  
+				}catch(Exception e){
+					System.out.println(e);
+				}	
 
+  				String query2 ="INSERT INTO penjualan(idbook, harga, totalpenjualan) VALUES(?, ?, ?)";
+				System.out.println(query2);
+				try{  
+					//Class.forName("com.mysql.cj.jdbc.Driver");  
+					Connection conDB = DriverManager.getConnection(
+						"jdbc:mysql://localhost:3306/book",
+						"root",""
+					);   
+					PreparedStatement preparedStmt = conDB.prepareStatement(query2);
+					preparedStmt.setString(1, books[i].getId());
+					preparedStmt.setFloat(2, books[i].getHarga());
+					preparedStmt.setInt(3, 0);
+					preparedStmt.execute();
+					conDB.close();  
+				}catch(Exception e){
+					System.out.println(e);
+				}
   		}
   		return books;
   }
@@ -237,7 +292,6 @@ public class BookServiceImpl implements BookService {
 		String gambar;
 		float rating;
 		float harga;
-		String kategori;
 		String sinopsis;
 		
 		// Penulis
@@ -288,11 +342,18 @@ public class BookServiceImpl implements BookService {
 			}
 
 			// Kategori
+			String[] kategori;
 			if (book_json.getJSONObject("volumeInfo").has("categories")) {
-				kategori = book_json.getJSONObject("volumeInfo").getJSONArray("categories").getString(0);
-			} else {
-				kategori = "Uncategorized";
-			}
+  				JSONArray kategori_array = book_json.getJSONObject("volumeInfo").getJSONArray("categories");
+  				kategori = new String[kategori_array.length()];
+	  			for (int j = 0; j < kategori_array.length(); j++) {
+	  				kategori[j] = kategori_array.getString(j);
+	  			}  
+
+  			} else {
+  				kategori = new String[1];
+  				kategori[0] = "Uncategorized";
+  			}
 
 			// Set Value of Detail
 			detail.setId(id);
@@ -321,7 +382,7 @@ public class BookServiceImpl implements BookService {
 		String idbook = "0";
 		int total;
 		try{  
-      Class.forName("com.mysql.cj.jdbc.Driver");  
+    //  Class.forName("com.mysql.cj.jdbc.Driver");  
       Connection con = DriverManager.getConnection(
 				"jdbc:mysql://localhost:3306/book",
 				"root",""

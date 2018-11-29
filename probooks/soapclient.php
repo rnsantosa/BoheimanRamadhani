@@ -1,5 +1,6 @@
 <?php
   $client = new SoapClient("http://localhost:8888/service/transaksi?wsdl");
+
   if(isset($_POST['judul'])){
     $params = array(
       "arg0" => $_POST['judul']
