@@ -141,7 +141,7 @@
               <table class='desc-book'>
               <tr>
                   <td>
-                      <h2 class='text-orange'>{$detail['judul']}</h2>
+                      <h1 class='text-orange judul'>{$detail['judul']}</h1>
                       <div class='author'>";
           if (gettype($detail['penulis']) === "array") {
               echo (implode(", ", $detail['penulis']));
