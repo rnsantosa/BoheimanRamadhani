@@ -366,7 +366,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public String getRecommendation(Object obj) throws IOException {
-		Class obj = kategori.getClass();
+		Class cls = obj.getClass();
 		System.out.println("The type of the object is: " + cls.getName());
 		 
 	}
