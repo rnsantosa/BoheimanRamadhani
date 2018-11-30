@@ -1,6 +1,8 @@
 <?php
     ob_start();
     require_once 'utils/validate-session.php';
+    // require_once 'utils/Google/autoload.php';
+
     // if token ter validasi
 
     $con = mysqli_connect("localhost","root","","probooks");
@@ -44,10 +46,26 @@
             exit;
         } else {
             echo '<script>alert("Wrong username or password");</script>';
-        }                   
-    }
+        }
 
+    }
     $con->close();
+
+    // // GOOGLE API SIGN IN
+    // $client = new Google_Client();
+    // $client->setApplicationName("Probooks");
+    // $client->setDeveloperKey("AIzaSyAOyuL_JzI6t0sBkxksHvMu8Ed2g9HGmwI");
+    // $client->addScope(Google_Service_Oauth2::USERINFO_PROFILE);
+    // $client->addScope(Google_Service_Oauth2::USERINFO_EMAIL);
+
+    // $oauthService = new Google_Service_Oauth2($client);
+    // $userInfo = $oauthService->userinfo_v2_me->get();
+    // echo "User info:<br>Name: ".$userInfo->name
+    // ."<br>givenName: ".$userInfo->givenName
+    // ."<br>familyName: ".$userInfo->familyName
+    // ."<br>email: ".$userInfo->email;
+    // $service = new Google_Service_Books($client);
+  
 ?>
 
 <!DOCTYPE html>
@@ -56,6 +74,8 @@
             <title>LOGIN</title>
             <link rel="stylesheet" type="text/css" href="public/css/login.css">
             <link rel="stylesheet" type="text/css" href="public/css/body.css">
+            <script src="https://apis.google.com/js/platform.js" async defer></script>
+            <meta name="google-signin-client_id" content="534996295732-pg3de2vf8qceeb860hgscm3hk21438gj.apps.googleusercontent.com">
         </head>
         <body>
             <div class="content">
@@ -73,6 +93,9 @@
                             </tr>
                         </table>
                     </center><br>
+                    <center>
+                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                    </center>
                         <a href="register.php">Don't have an account?</a><br><br>
                     <center>
                         <input type="submit" name="submit" value="LOGIN">
@@ -94,6 +117,37 @@
             function wrong() {
                 alert("Wrong username or password");
             }
+
+            function onSignIn(googleUser) {
+                var profile = googleUser.getBasicProfile();
+                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                console.log('Name: ' + profile.getName());
+                console.log('Image URL: ' + profile.getImageUrl());
+                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+            }
+
+            function googleLogin() {
+                var profile = googleUser.getBasicProfile();
+                var email = profile.getEmail();
+                var image = profile.getImageUrl();
+                var name = profile.getName();
+                
+                var xmlHttp = new XMLHttpRequest();
+                var url="utils/checkemail.php";
+                var param = "email=" + email;
+                xmlHttp.open("POST", url, true);
+
+                xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlHttp.setRequestHeader("Content-length", param.length);
+                xmlHttp.setRequestHeader("Connection", "close");
+                xmlHttp.onreadystatechange = function() {
+                    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                        document.getElementById('email_status').innerHTML = xmlHttp.responseText;
+                    }
+            }
+                
+    }
+    xmlHttp.send(param);
         </script>
     </html>
 
