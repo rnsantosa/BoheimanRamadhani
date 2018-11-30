@@ -109,7 +109,6 @@
           $star_yellow = "star-active.png";
           $star_black = "star-inactive.png";
 
-          // MASIH YANG LAMA INI
           // Get Number of Transaction
           $qry_num_transaction = "SELECT MAX(ID) as id FROM ordering;";
           $result = mysqli_fetch_assoc(mysqli_query($con, $qry_num_transaction));
@@ -135,25 +134,36 @@
               insertOrder($con, $username, $bookid, $_POST['selected']);
           }
 
+          
           $kategories = $detail['kategori'];
-
+          
           echo "
               <table class='desc-book'>
               <tr>
                   <td>
                       <h2 class='text-orange'>{$detail['judul']}</h2>
-                      <div class='author'>{$detail['penulis']}</div>
-                      <div class='desc'>{$detail['sinopsis']}</div><br>
-                      <a class='kategori'> Kategori: </a>
-                      <ul> 
-          ";
-          
-          for ($x = 0; $x < count($kategories); $x++) {
-            echo "
-                        <li>{$kategories[$x]}</li> 
-            ";
+                      <div class='author'>";
+          if (gettype($detail['penulis']) === "array") {
+              echo (implode(", ", $detail['penulis']));
+          } else {
+              echo ($detail['penulis']);
           }  
-          echo "      </ul>
+                      echo"</div>
+                      <div class='desc'>{$detail['sinopsis']}</div><br>
+                      <a class='kategori'> Kategori: </a>";
+          
+          
+          if (gettype($kategories) === "array") {
+            echo"<br><ul> ";
+            for ($x = 0; $x < count($kategories); $x++) {
+                echo "<li>{$kategories[$x]}</li> ";
+            }
+            echo"</ul>";
+          } else {
+            echo"$kategories<br>";
+          }
+          
+          echo "
                       <a class='harga'> Harga: Rp {$detail['harga']} </a><br>
                   </td>
                   <td class='picture'>
@@ -249,14 +259,34 @@
         "arg0" => $detail['kategori']
       );
       $response = $client->__soapCall("getRecommendation", $params);
-      var_dump($response);
+    //   var_dump($response);
+
+        // Call SOAP for GetDetail
+        $params = array(
+            "arg0" => "z-VfDeuhq6kC"
+        );
+        $response = $client->__soapCall("getDetail", $params);
+        $rec = json_encode($response);
+        $rec = json_decode($rec, true);
+
+        echo"<div class='container clearfix'>
+                <div class='book-info'> 
+                    <a href='order.php?bookid=$rec[id]' style='text-decoration: none'>    
+                    <img class='book-pict' src={$rec["gambar"]}>
+                    <p class='book-title'>{$rec["judul"]} </p>
+                    </a>
+                    <p class='author-book'>";
+                    if (gettype($rec['penulis']) === "array") {
+                        echo (implode(", ", $rec['penulis']));
+                    } else {
+                        echo ($rec['penulis']);
+                    } 
+                    echo"
+                    </p>
+                </div>
+            </div>";
     ?>
 
-
-
-
-
-    <p>Ninja Saga</p>
     <h3>Reviews</h3>
 
     <?php
