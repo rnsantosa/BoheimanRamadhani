@@ -55,6 +55,7 @@
   <link rel="stylesheet" type="text/css" href="public/css/body.css">   
   <link rel="stylesheet" type="text/css" href="public/css/navbar.css">   
   <link rel="stylesheet" type="text/css" href="public/css/order.css">
+  <link rel="stylesheet" type="text/css" href="public/css/search-books.css">
 </head>
 <body>
   <div id="nav">
@@ -234,9 +235,8 @@
                             <span class='close'>&times;</span>
                             <br>
                             <p class='modal-text'>
-                                <img src='public/img/tick.png' class='img-tick'>
-                                <b>Pemesanan Berhasil!<br></b>
-                                Nomor Transaksi : {$num}
+                            <div class='loader' style='display: none' id = 'loader'>          
+                            </div>
                             </p>
                         </div>
                     </div>
@@ -315,6 +315,30 @@
       }
     ?>
 
+    <?php
+      $servername = "localhost";
+      $userdb = "root";
+      $password = "";
+      $dbname = "probooks";
+      $username = $_POST['username'];
+      $bookid = $_POST['bookid'];
+      $count = $_POST['count'];
+      
+      // Create connection
+      $conn = new mysqli($servername, $userdb, $password, $dbname);
+      // Check connection
+      if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+      }
+      $sql = "SELECT max(id) max_id FROM ordering";
+      $result = $conn->query($sql);
+      if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $nomorTransaksi = $row['max_id'];
+      }
+      $conn->close();   
+    ?>;
+
     <script>
 
       function getDetail(id){
@@ -334,13 +358,16 @@
       }
 
       function order(id) {
+        document.getElementById("loader").style.display = "block";
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block";
         if (!xmlhttp) {
           var xmlhttp = new XMLHttpRequest();
         }
         var e = document.getElementById("dropdown");
         var quantity = encodeURIComponent(e.options[e.selectedIndex].value);
         var url="soapclient.php";
-        var param = "idbook=" + id + "&quantity=" + quantity +"&nomorPengirim=" + <?php echo($cardnumber);  ?>;
+        var param = "idbook=" + id + "&quantity=" + quantity +"&nomorPengirim=" + <?php echo $cardnumber; ?>;
         xmlhttp.open("POST", url, true);
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xmlhttp.onreadystatechange = function() {
@@ -352,17 +379,37 @@
               var modal = document.getElementById("myModal");
               var btn = document.getElementById("MyBtn");
               var span = document.getElementsByClassName("close")[0];
+              document.getElementsByClassName("modal-text")[0].innerHTML ="<img src='public/img/tick.png' class='img-tick'><b>Pemesanan Berhasil!<br></b>Nomor Transaksi : <?php echo $nomorTransaksi; ?>";
+              document.getElementById("loader").style.display = "none";
               modal.style.display = "block";                                                    
               span.onclick = function() {
                 modal.style.display = "none";
+                document.getElementsByClassName("modal-text")[0].innerHTML = "";
               }
               window.onclick = function(event) {
                 if (event.target == modal) {
                   modal.style.display = "none";
+                  document.getElementsByClassName("modal-text")[0].innerHTML = "";
                 }
               }
             } else {
               console.log("transaksi gagal bos");
+              document.getElementById("loader").style.display = "none";
+              var modal = document.getElementById("myModal");
+              var btn = document.getElementById("MyBtn");
+              var span = document.getElementsByClassName("close")[0];
+              document.getElementsByClassName("modal-text")[0].innerHTML = "Saldo anda kurang";
+              modal.style.display = "block";                                                    
+              span.onclick = function() {
+                modal.style.display = "none";
+                document.getElementsByClassName("modal-text")[0].innerHTML = "";
+              }
+              window.onclick = function(event) {
+                if (event.target == modal) {
+                  modal.style.display = "none";
+                  document.getElementsByClassName("modal-text")[0].innerHTML = "";
+                }
+              }
             }
           }
         }
@@ -379,6 +426,11 @@
       function addtoordering(username, bookid, count){
         var xhttp = new XMLHttpRequest();
         xhttp.open("POST", "./utils/addtoordering.php", true);
+        xhttp.onreadystatechange = function(){
+          if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+          }
+        };
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("username="+username+"&bookid="+bookid+"&count="+count);
       }
