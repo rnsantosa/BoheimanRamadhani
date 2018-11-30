@@ -17,6 +17,7 @@ import org.json.JSONArray;
 
 import java.util.Random;
 import java.util.Arrays;
+import java.lang.Class;;
 
 @WebService(endpointInterface = "com.probooks.jaxws.service.BookService")  
 public class BookServiceImpl implements BookService {
@@ -365,97 +366,77 @@ public class BookServiceImpl implements BookService {
 	};
 
 	@Override
-	public String getRecommendation(Object obj) throws IOException {
-		Class cls = obj.getClass();
-		System.out.println("The type of the object is: " + cls.getName());
-
-		if (obj instanceof String) {
-			System.out.println("MANTAP");
-		} else {
-			System.out.println("CACAT");
+	public String getRecommendation(String[] kategori) throws IOException {
+		// String query = String.format("SELECT orders.orderid, orders.bookid, orders.kategori, orders.total FROM (SELECT *, sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) orders WHERE orders.total = (SELECT Max(total) FROM(SELECT sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) jumlahbook)" , kategori, kategori);
+		String query = "SELECT idbook FROM kategori NATURAL JOIN penjualan WHERE ";
+		for(int i = 0; i < kategori.length; i++){
+			if(i != kategori.length - 1){
+				query += "kat = '" + kategori[i] + "' or ";
+			} else {
+				query += "kat = '" + kategori[i] + "' ";
+			}
 		}
-		 
-		return ("hehe");
-	}
-		// // String query = String.format("SELECT orders.orderid, orders.bookid, orders.kategori, orders.total FROM (SELECT *, sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) orders WHERE orders.total = (SELECT Max(total) FROM(SELECT sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) jumlahbook)" , kategori, kategori);
-		// String query = "SELECT idbook FROM kategori NATURAL JOIN penjualan WHERE ";
-		// for(int i = 0; i < kategori.length; i++){
-		// 	if(i != kategori.length - 1){
-		// 		query += "kat = '" + kategori[i] + "' or ";
-		// 	} else {
-		// 		query += "kat = '" + kategori[i] + "' ";
-		// 	}
-		// }
-		// query += "GROUP BY idbook ORDER BY totalpenjualan DESC"; 
-		// System.out.println(query);
-		// // SELECT distinct idbook, totalpenjualan 
-		// // FROM book.penjualan natural join book.kategori 
-		// // WHERE kat LIKE "%Fiction%" ORDER BY totalpenjualan desc
-		// // LIMIT 1; 
-		// String idbook;
-		// if(kategori != null) {
-		// 	System.out.println("GAK KOSONG");
-		// } else {
-		// 	System.out.println("KOSONG");
-		// }
-		// // if(kategori instanceof java.lang.String) {
-		// // 	System.out.println(" is a String");
-		// //    }
-		// // System.out.println(kategori.getClass());
-
-		// System.out.println(kategori[0]+"TAI");
-
+		query += "GROUP BY idbook ORDER BY totalpenjualan DESC"; 
+		System.out.println(query);
+		String idbook = "default";
+		
+		System.out.println("INDEX KE 0-" + kategori[0]);
 		// if (kategori[0].equals("Uncategorized")) {
 		// 	idbook = "CcFNCgAAQBAJ";
 		// } else {
-		// 	try{  
-		// 		Class.forName("com.mysql.cj.jdbc.Driver");  
-		// 		Connection con = DriverManager.getConnection(
-		// 				  "jdbc:mysql://localhost:3306/book",
-		// 				  "root",""
-		// 			  );   
-		// 		Statement stmt = con.createStatement();  
-		// 		ResultSet rs = stmt.executeQuery(query);
-		// 			  rs.next();
-		// 			  idbook = rs.getString(1);
-		// 			  System.out.println("Rekomendasi: " + idbook);
-		// 		con.close();  
-		// 	} catch(Exception e){
-		// 		System.out.println(e);
-		// 		String term = kategori[0];
-		// 		term = term.replace(" ", "+");
-		// 		String USER_AGENT = "Mozilla/5.0";
-		// 		String GET_URL = "https://www.googleapis.com/books/v1/volumes?q=subject:'" +term+ "'&fields=items(id)";
-
-		// 		URL obj = new URL(GET_URL);
-		// 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-		// 		con.setRequestMethod("GET");
-		// 		con.setRequestProperty("User-Agent", USER_AGENT);
-		// 		int responseCode = con.getResponseCode();
-		// 		System.out.println("GET Response Code :: " + responseCode);
-		// 		StringBuffer response = new StringBuffer();
-		// 		if (responseCode == HttpURLConnection.HTTP_OK) { // success
-		// 			BufferedReader in = new BufferedReader(new InputStreamReader(
-		// 					con.getInputStream()));
-		// 			String inputLine;
-					
-		// 			while ((inputLine = in.readLine()) != null) {
-		// 				response.append(inputLine);
-		// 			}
-		// 			in.close();
-		// 		} else {
-		// 			System.out.println("GET request not worked");
-		// 		}
-		// 		Random rand = new Random(); 
-		// 		int value = rand.nextInt(10);
-
-		// 		JSONObject json = new JSONObject(response.toString());
-		// 		idbook = json.getJSONArray("items").getJSONObject(value).getString("id");
+			try{  
+				Class.forName("com.mysql.cj.jdbc.Driver");  
+				Connection con = DriverManager.getConnection(
+						"jdbc:mysql://localhost:3306/book",
+						"root",""
+					);   
+				Statement stmt = con.createStatement();  
+				ResultSet rs = stmt.executeQuery(query);
+				rs.next();
+				idbook = rs.getString(1);
+				System.out.println("Rekomendasi: " + idbook);
+				con.close();  
 				
+				System.out.println("INI" + idbook + "TAIIIII");
+				if (idbook.equals("default")) {
+					System.out.println("mantap");
+					String term = kategori[0];
+					term = term.replace(" ", "+");
+					String USER_AGENT = "Mozilla/5.0";
+					String GET_URL = "https://www.googleapis.com/books/v1/volumes?q=subject:'" +term+ "'&fields=items(id)";
 
-		// 	}
+					URL obj = new URL(GET_URL);
+					HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+					conn.setRequestMethod("GET");
+					conn.setRequestProperty("User-Agent", USER_AGENT);
+					int responseCode = conn.getResponseCode();
+					System.out.println("GET Response Code :: " + responseCode);
+					StringBuffer response = new StringBuffer();
+					if (responseCode == HttpURLConnection.HTTP_OK) { // success
+						BufferedReader in = new BufferedReader(new InputStreamReader(
+								conn.getInputStream()));
+						String inputLine;
+						
+						while ((inputLine = in.readLine()) != null) {
+							response.append(inputLine);
+						}
+						in.close();
+
+						Random rand = new Random(); 
+						int value = rand.nextInt(10);
+
+						JSONObject json = new JSONObject(response.toString());
+						idbook = json.getJSONArray("items").getJSONObject(value).getString("id");
+					} 
+				} else {
+					System.out.println("GET request not worked");
+				}
+				
+			} catch(Exception e){
+				System.out.println(e+"MASUK KE BAWAH CUY");
+			}
 		// }
-		// return idbook;
-		// };
+		return idbook;
+		};
 		
 }

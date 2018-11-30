@@ -142,7 +142,7 @@
               <table class='desc-book'>
               <tr>
                   <td>
-                      <h2 class='text-orange'>{$detail['judul']}</h2>
+                      <h1 class='text-orange judul'>{$detail['judul']}</h1>
                       <div class='author'>";
           if (gettype($detail['penulis']) === "array") {
               echo (implode(", ", $detail['penulis']));
@@ -260,15 +260,24 @@
         'exceptions'=>true,
       );
       $client = new SoapClient("http://localhost:8888/service/transaksi?wsdl", $options);
-      $params = array(
-        "arg0" => $detail['kategori']
-      );
+      if (sizeof($detail['kategori']) <= 1) {
+        $params = array(
+            "arg0" => [$detail['kategori']]
+        );
+      } else {
+        $params = array(
+            "arg0" => $detail['kategori']
+        );
+      }
+      
       $response = $client->__soapCall("getRecommendation", $params);
-      var_dump($response);
+        //   var_dump($response);
         // Call SOAP for GetDetail
+        
         $params = array(
             "arg0" => $response
         );
+        
         $response = $client->__soapCall("getDetail", $params);
         $rec = json_encode($response);
         $rec = json_decode($rec, true);
