@@ -1,4 +1,4 @@
-# Tugas 2 IF3110 Pengembangan Aplikasi Berbasis Web 
+# Tugas 2 IF3110 Pengembangan Aplikasi Berbasis Web
 
 Melakukan *upgrade* Website toko buku online pada Tugas 1 dengan mengaplikasikan **arsitektur web service REST dan SOAP**.
 
@@ -92,7 +92,7 @@ Menyimpan transaksi yang dilakukan oleh nasabah. Memiliki atribut:
 1. **Pembangkitan Token**
 
 Token dibangkitkan ketika pengguna berhasil melakukan login ke aplikasi atau berhasil melakukan registerasi. Mekanisme pembangkitan token adalah sebagai berikut.
-- Website akan meng-generate sebuah akses token berupa string random 32 huruf. 
+- Website akan meng-generate sebuah akses token berupa string random 32 huruf.
 - Website mengambil data berupa browser, IP Address, username, serta expire time yaitu 60 menit dari dibuatnya token.
 - Akses token, browser, IP Address, username, dan expire time disimpan ke dalam database.
 - Akses token dan username disimpan ke cookies untuk di-validasi saat menjalankan aplikasi.
@@ -118,9 +118,9 @@ Anda diminta membuat sebuah webservice bank sederhana yang dibangun di atas **no
 
 Webservice bank menyediakan service untuk validasi nomor kartu dan transfer. Webservice bank diimplementasikan menggunakan protokol **REST**.
 - Service validasi nomor kartu dilakukan dengan memeriksa apakah nomor kartu tersebut ada pada database bank. Jika iya, berarti kartu tersebut valid.
-  
+
 - Service transfer menerima input nomor kartu pengirim, penerima, dan jumlah yang ditransfer. Jika saldo mencukupi, maka transfer berhasil dan uang sejumlah tersebut dipindahkan dari pengirim ke penerima. Transaksi tersebut juga dicatat dalam database webservice. Jika saldo tidak mencukupi, maka transaksi ditolak dan tidak dicatat di database.
-  
+
 #### Webservice buku
 
 Webservice ini menyediakan daftar buku beserta harganya yang akan digunakan oleh aplikasi pro-book. Webservice buku dibangun di atas **java servlet**. Service yang disediakan webservice ini antara lain adalah pencarian buku, mengambil detail buku, melakukan pembelian, serta memberikan rekomendasi buku sederhana. Webservice ini diimplementasikan menggunakan **JAX-WS dengan protokol SOAP**.
@@ -138,9 +138,9 @@ Detail service yang disediakan webservice ini adalah:
   Jumlah buku yang berhasil dibeli dicatat di database. Webservice menyimpan ID buku, kategori (genre), dan jumlah total pembelian buku tersebut. Data ini akan digunakan untuk memberikan rekomendasi. Jika pembelian gagal maka data tidak dicatat pada aplikasi.
 
 - Webservice juga dapat memberikan rekomendasi sederhana. Input dari webservice ini adalah kategori buku. Kategori buku yang dimasukkan boleh lebih dari 1. Buku yang direkomendasikan adalah buku yang memiliki jumlah pembelian total terbanyak yang memiliki kategori yang sama dengan daftar kategori yang menjadi input. Data tersebut didapat dari service yang mencatat jumlah pembelian.
-  
+
   Jika buku dengan kategori tersebut belum ada yang terjual, maka webservice akan mengembalikan 1 buku random dari hasil pencarian pada Google Books API. Pencarian yang dilakukan adalah buku yang memiliki kategori yang sama dengan salah satu dari kategori yang diberikan (random).
-  
+
 #### Perubahan pada aplikasi pro-book
 
 Karena memanfaatkan kedua webservice tersebut, akan ada perubahan pada aplikasi yang Anda buat.
@@ -192,19 +192,19 @@ Anda tidak dituntut untuk mengerjakan ini. Fokus terlebih dahulu menyelesaikan s
 1. Token bank
 
     Ketika Anda melakukan transfer online, beberapa bank menyediakan sebuah mesin yang memberikan sebuah angka (token) yang harus dimasukan untuk memvalidasi transfer. Anda akan meniru fitur ini pada webservice bank.
-    
+
     Mekanisme token menggunakan algoritma HOTP atau TOTP, algoritma hash yang digunakan dibebaskan kepada peserta, misalnya SHA1. Token berupa 8 digit angka. Informasi-informasi yang dibutuhkan untuk membangun token ini, seperti shared secret key, disimpan pada database webservice bank. Anda diperbolehkan menggunakan library HOTP/TOTP untuk membentuk token tersebut.
-    
+
     Buatlah juga sebuah script (bebas, mau dalam bentuk PHP, JS, dll.) sebagai pengganti mesin token bank untuk membangun token yang akan digunakan untuk proses transfer.
-    
+
     Setiap permintaan transfer yang berasal (yang memberikan uang) dari nomor kartu tersebut, harus menyertakan token yang valid. Token valid adalah token milik nomor kartu yang bersangkutan yang di-generate melalui alat (request di atas) dan belum expired. Jika transfer tidak menyertakan token yang valid, transfer akan gagal, seperti jika Anda melakukan transfer dengan saldo yang kurang.
-    
+
     Maka, aplikasi pro-book memiliki field tambahan yaitu transfer token, yang terdapat pada halaman book detail saat melakukan order. Token tersebut kemudian diberikan kepada webservice buku, yang kemudian akan digunakan untuk memvalidasi transfer pembelian buku.
-    
+
 2. Login via Google
-    
+
     Aplikasi memiliki pilihan untuk login menggunakan akun google, seperti yang sering ditemui pada aplikasi web atau game. Contohnya seperti tombol berikut pada [stack overflow](https://stackoverflow.com/). Informasi yang ditampilkan untuk user yang login dengan akun google diambil dari informasi akun google tersebut.
-    
+
     ![](temp/button_example.png)
 
 ### Pembagian Tugas
@@ -213,33 +213,32 @@ Anda tidak dituntut untuk mengerjakan ini. Fokus terlebih dahulu menyelesaikan s
 *Harap semua anggota kelompok mengerjakan SOAP dan REST API kedua-duanya*. Tuliskan pembagian tugas seperti berikut ini.
 
 REST :
-1. Validasi nomor kartu : 13516009, 13516015
+1. Validasi nomor kartu : 13516009, 13516018
 2. Transfer : 13516099
 
 SOAP :
-1. Pencarian Buku : 
+1. Pencarian Buku : 13516018
 2. Pengambilan Detail : 13516009
 3. Pembelian Buku :
-4. Rekomendasi : 
+4. Rekomendasi :
 
 Perubahan Web app :
-1. Halaman Search : 
+1. Halaman Search : 13516018
 2. Halaman Order :
 3. Halaman History : 13516009
 4. Halaman Profil : 13516009
 5. Halaman Registerasi : 13516009
 
 Bonus :
-1. Pembangkitan token HTOP/TOTP : 
-2. Validasi token : 
+1. Pembangkitan token HTOP/TOTP :
+2. Validasi token :
 
 ## About
 
 Dibuat untuk memenuhi tugas IF3110 2018
 
-13516009 - Rahmat Nur Ibrahim Santosa 
-13516015 - Nira Ramadhani Rizki
+13516009 - Rahmat Nur Ibrahim Santosa
+13516018 - Nira Ramadhani Rizki
 13516099 - Raka Hadhyana
 
 Dosen : Yudistira Dwi Wardhana | Riza Satria Perdana | Muhammad Zuhri Catur Candra
-
