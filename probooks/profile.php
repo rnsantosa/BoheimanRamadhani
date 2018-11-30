@@ -24,7 +24,7 @@
     }
 
     //fetch data from db
-    $sql = "SELECT username, name, address, phone, email, image FROM user WHERE username = '$uname'";
+    $sql = "SELECT username, name, address, phone, email, image, cardnumber FROM user WHERE username = '$uname'";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($result);
     $uname = $row["username"];
@@ -33,6 +33,7 @@
     $phone = $row["phone"];
     $email = $row["email"];
     $photo = $row["image"];
+    $cardnumber = $row["cardnumber"];
 
     mysqli_close($conn);
 ?>
@@ -73,22 +74,27 @@
                 <tr>
                     <td><img src="public/icons/user.png" width=20px height=20px></td>
                     <td>Username</td>
-                    <td>@<?php echo "$uname"; ?></td>
+                    <td class="content">@<?php echo "$uname"; ?></td>
                 </tr>
                 <tr>
                     <td><img src="public/icons/email.png" width=20px height=20px></td>
                     <td>Email</td>
-                    <td><?php echo "$email"; ?></td>
+                    <td class="content"><?php echo "$email"; ?></td>
                 </tr>
                 <tr>
                     <td><img src="public/icons/address.png" width=20px height=20px></td>
                     <td>Address</td>
-                    <td><?php echo "$address"; ?></td>
+                    <td class="content"><?php echo "$address"; ?></td>
                 </tr>
                 <tr>
                     <td><img src="public/icons/phone.png" width=20px height=20px></td>
                     <td>Phone Number</td>
-                    <td><?php echo "$phone"; ?></td>
+                    <td class="content"><?php echo "$phone"; ?></td>
+                </tr>
+                <tr>
+                    <td><img src="public/icons/card.png" width=20px height=20px></td>
+                    <td>Card Number</td>
+                    <td class="content"><?php echo "$cardnumber"; ?></td>
                 </tr>
             </table>
         </div>

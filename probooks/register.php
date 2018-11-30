@@ -5,11 +5,14 @@
     $username = $_COOKIE['username'];
     $access_token = $_COOKIE['access_token'];
     
-    validate($access_token, $username, 'search.php');
+    if(isset($username) && (isset($access_token))) {
+        validate($access_token, $username, 'search.php');
+        setcookie('access_token', $access_token, time() + 600, '/');
+        setcookie('username', $username, time() + 600, '/');
+    }
     checkSession();
 
-    setcookie('access_token', $access_token, time() + 600, '/');
-    setcookie('username', $username, time() + 600, '/');
+    
 ?>
 <!DOCTYPE html>
     <html>
@@ -129,9 +132,9 @@
                     return false;
                 }
                 
-                var namehtml = document.getElementById("username_status").getAttribute("src");
-                var emailhtml = document.getElementById("email_status").getAttribute("src");
-                var cardhtml = document.getElementById("card_status").getAttribute("src");
+                var namehtml = document.getElementById("unamestatus").getAttribute("src");
+                var emailhtml = document.getElementById("emailstatus").getAttribute("src");
+                var cardhtml = document.getElementById("cardstatus").getAttribute("src");
                 if (namehtml == "public/icons/mark.png") {
                     alert("Username already exists");
                     return false;
@@ -203,6 +206,12 @@
                     }
                 }
                 xmlHttp.send(param);
+            }
+
+            window.onload = function() {
+                checkname();
+                checkemail();
+                checkcard();
             }
 
         </script>
