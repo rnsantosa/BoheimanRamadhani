@@ -159,6 +159,10 @@
                 xmlHttp.send(param);
             }
 
+            window.onload = function() {
+                checkcard();
+            }
+
             displayFile = function() {
                 var input = document.getElementById('file');
                 var output = document.getElementById('filename');

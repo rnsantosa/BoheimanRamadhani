@@ -55,9 +55,9 @@ $result = mysqli_query($conn, $query);
         <p class="title">History</p>
         <div id="history-content">
             <?php 
+                $client = new SoapClient("http://localhost:8888/service/transaksi?wsdl");
                 while($row = $result->fetch_assoc()) {
-                    // CALL SOAP API
-                    $client = new SoapClient("http://localhost:8888/service/transaksi?wsdl");
+                    // CALL SOAP API    
                     $params = array(
                         "arg0" => $row['bookid']
                     );
@@ -65,16 +65,18 @@ $result = mysqli_query($conn, $query);
                     $detail = json_encode($response);
                     $detail = json_decode($detail, true);
 
-                    if ($row['reviewed'] == '1') {
-                        echo"<div class='flex-container'>
+                    echo"<div class='flex-container'>
                             <div class='book-info'> 
+                                <a href='order.php?bookid=$detail[id]' style='text-decoration: none'>    
                                 <img class='book-pict' src={$detail["gambar"]}>
                                 <p class='book-title'>{$detail["judul"]} </p>
-                                <p class='book-content'>Jumlah: {$row['count']} <br>
-                                Anda sudah memberikan review <br>
-                            </div>
+                                </a>
+                                <p class='book-content'>Jumlah: {$row['count']} <br>";
+                    if ($row['reviewed'] == '1') {
+                        echo"Anda sudah memberikan review <br>
+                            </div>";
                             
-                            <div class='buy-time'> 
+                        echo"<div class='buy-time'> 
                                 <p class='buy-info'>";
 
                         echo date("j F Y", strtotime($row['date']));
@@ -82,13 +84,8 @@ $result = mysqli_query($conn, $query);
                                 </p>
                             </div>
                         </div>";
-                    } else { 
-                        echo"<div class='flex-container'>
-                            <div class='book-info'> 
-                                <img class='book-pict' src={$detail["gambar"]}>
-                                <p class='book-title'>{$detail["judul"]} </p>
-                                <p class='book-content'>Jumlah: {$row['count']} <br>
-                                Belum direview<br>
+                    } else {
+                        echo"Belum direview<br>
                             </div>
                             
                             <div class='buy-time'> 
