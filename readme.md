@@ -2,111 +2,6 @@
 
 Melakukan *upgrade* Website toko buku online pada Tugas 1 dengan mengaplikasikan **arsitektur web service REST dan SOAP**.
 
-### Tujuan Pembuatan Tugas
-
-Diharapkan dengan tugas ini anda dapat mengerti:
-* Produce dan Consume REST API
-* Produce dan Consume Web Services dengan protokol SOAP
-* Membuat web application yang akan memanggil web service secara REST dan SOAP.
-* Memanfaatkan web service eksternal (API)
-
-## Petunjuk Pengerjaan
-
-1. Buatlah organisasi pada gitlab dengan format "IF3110-2018-KXX-nama kelompok", dengan XX adalah nomor kelas.
-2. Tambahkan anggota tim pada organisasi anda.
-3. Fork pada repository ini dengan organisasi yang telah dibuat.
-4. Ubah hak akses repository hasil Fork anda menjadi **private**.
-5. [DELIVERABLE] Buat tugas sesuai spesifikasi dan silakan commit pada repository anda (hasil fork). Lakukan berberapa commit dengan pesan yang bermakna, contoh: `add register form`, `fix logout bug`, jangan seperti `final`, `benerin dikit`. Disarankan untuk tidak melakukan commit dengan perubahan yang besar karena akan mempengaruhi penilaian (contoh: hanya melakukan satu commit kemudian dikumpulkan). Sebaiknya commit dilakukan setiap ada penambahan fitur. **Commit dari setiap anggota tim akan mempengaruhi penilaian individu.** Jadi, setiap anggota tim harus melakukan sejumlah commit yang berpengaruh terhadap proses pembuatan aplikasi.
-6. Hapus bagian yang tidak perlu dari *readme* ini.
-7. [DELIVERABLE] Berikan penjelasan mengenai hal di bawah ini pada bagian **Penjelasan** dari *readme* repository git Anda:
-    - Basis data dari sistem yang Anda buat, yaitu basis data aplkasi pro-book, webservice bank, dan webservice buku.
-    - Konsep *shared session* dengan menggunakan REST.
-    - Mekanisme pembangkitan token dan expiry time pada aplikasi Anda.
-    - Kelebihan dan kelemahan dari arsitektur aplikasi tugas ini, dibandingkan dengan aplikasi monolitik (login, CRUD DB, dll jadi dalam satu aplikasi)
-8. Pada *readme* terdapat penjelasan mengenai pembagian tugas masing-masing anggota (lihat formatnya pada bagian **pembagian tugas**).
-9. Merge request dari repository anda ke repository ini dengan format **Nama kelompok** - **NIM terkecil** - **Nama Lengkap dengan NIM terkecil** sebelum **Jumat, 30 November 2018 pukul 23.59**.
-
-## Basis Data
-Terdapat 3 buah basis data yang digunakan pada program ini, yaitu database probooks sebagai database aplikasi, database book sebagai database web-service book, dan database bank sebagai database web-service bank.
-
-### Database Probooks
-1. **Tabel User**
-
-Menyimpan data pengguna. Memiliki atribut: `username`, `password`, `name`, `phone`, `address`, `email`, `image`, dan `cardnumber`.
-
-2. **Tabel Ordering**
-
-Menyimpan order yang dilakukan setiap pengguna aplikasi melakukan pembelian. Memiliki atribut:
-- `id`: kode id untuk suatu order
-- `username`: username user yang melakukan order
-- `bookid`: id dari buku yang dibeli
-- `count`: jumlah buku yang dibeli
-- `date`: waktu saat dilakukan order
-
-3. **Tabel Review**
-
-Menyimpan review terhadap order yang dilakukan pengguna. Memiliki atribut:
-- `id`: id suatu review
-- `orderid`: foreign key untuk tabel ordering
-- `content`: isi dari review
-- `rating`: nilai rating yang diberikan
-
-4. **Tabel Session**
-
-Menyimpan data yang dibutuhkan untuk membuat mekanisme akses token. Memiliki atribut:
-- `session_id`: Akses token pengguna, berupa string random 32 huruf
-- `username`: username dari pengguna, foreign key ke tabel user
-- `browser`: user agent yang digunakan pengguna
-- `ip_adress`: ip address dari pengguna
-- `expire_time`: waktu expire dari suatu sesi
-
-### Database Book
-1. **Tabel Penjualan**
-
-Menyimpan data penjualan buku. Memiliki atribut `idbook` sebagai primary key, `harga`, serta `totalpenjualan`.
-
-2. **Tabel Kategori**
-
-Menyimpan kategori buku yang disimpan. Memiliki atribut `id` dan `kategori`. Satu id dapat memiliki beberapa kategori.
-
-### Database Bank
-1. **Tabel Nasabah**
-
-Menyimpan data Nasabah. Memiliki atribut:
-- `nomor_kartu` - nomor kartu nasabah
-- `nama` - nama nasabah
-- `saldo` - saldo nasabah
-
-2. **Tabel Transaksi**
-
-Menyimpan transaksi yang dilakukan oleh nasabah. Memiliki atribut:
-- `nomor_pengirim`: nomor kartu nasabah pengirim
-- `nomor_penerima`: nomor kartu nasabah penerima
-- `jumlah`: jumlah transaksi
-- `waktu`: waktu transaksi
-
-## REST Shared Session
-
-## Mekanisme Pembangkitan Token dan Expire Time
-
-1. **Pembangkitan Token**
-
-Token dibangkitkan ketika pengguna berhasil melakukan login ke aplikasi atau berhasil melakukan registerasi. Mekanisme pembangkitan token adalah sebagai berikut.
-- Website akan meng-generate sebuah akses token berupa string random 32 huruf.
-- Website mengambil data berupa browser, IP Address, username, serta expire time yaitu 60 menit dari dibuatnya token.
-- Akses token, browser, IP Address, username, dan expire time disimpan ke dalam database.
-- Akses token dan username disimpan ke cookies untuk di-validasi saat menjalankan aplikasi.
-
-2. **Expire Time**
-
-Setiap session memiliki expire time yang disimpan dalam database. Mekanisme pengecekan expire time adalah sebagai berikut.
-- Dilakukan pengambilan sesi yang sudah expire dari database, yaitu session yang memiliki nilai expire_time < waktu sekarang.
-- Session yang sudah di expire dihapus dari database.
-
-Pengecekan ini dilakukan saat pengguna me-load halaman apapun pada aplikasi.
-
-## Kelebihan dan Kelemahan Arsitektur
-
 ## Deskripsi Tugas
 ![](temp/architecture.png)
 
@@ -207,11 +102,93 @@ Anda tidak dituntut untuk mengerjakan ini. Fokus terlebih dahulu menyelesaikan s
 
     ![](temp/button_example.png)
 
+# PENJELASAN
+
+## Basis Data
+Terdapat 3 buah basis data yang digunakan pada program ini, yaitu database probooks sebagai database aplikasi, database book sebagai database web-service book, dan database bank sebagai database web-service bank.
+
+### Database Probooks
+1. **Tabel User**
+
+Menyimpan data pengguna. Memiliki atribut: `username`, `password`, `name`, `phone`, `address`, `email`, `image`, dan `cardnumber`.
+
+2. **Tabel Ordering**
+
+Menyimpan order yang dilakukan setiap pengguna aplikasi melakukan pembelian. Memiliki atribut:
+- `id`: kode id untuk suatu order
+- `username`: username user yang melakukan order
+- `bookid`: id dari buku yang dibeli
+- `count`: jumlah buku yang dibeli
+- `date`: waktu saat dilakukan order
+
+3. **Tabel Review**
+
+Menyimpan review terhadap order yang dilakukan pengguna. Memiliki atribut:
+- `id`: id suatu review
+- `orderid`: foreign key untuk tabel ordering
+- `content`: isi dari review
+- `rating`: nilai rating yang diberikan
+
+4. **Tabel Session**
+
+Menyimpan data yang dibutuhkan untuk membuat mekanisme akses token. Memiliki atribut:
+- `session_id`: Akses token pengguna, berupa string random 32 huruf
+- `username`: username dari pengguna, foreign key ke tabel user
+- `browser`: user agent yang digunakan pengguna
+- `ip_adress`: ip address dari pengguna
+- `expire_time`: waktu expire dari suatu sesi
+
+### Database Book
+1. **Tabel Penjualan**
+
+Menyimpan data penjualan buku. Memiliki atribut `idbook` sebagai primary key, `harga`, serta `totalpenjualan`.
+
+2. **Tabel Kategori**
+
+Menyimpan kategori buku yang disimpan. Memiliki atribut `id` dan `kategori`. Satu id dapat memiliki beberapa kategori.
+
+### Database Bank
+1. **Tabel Nasabah**
+
+Menyimpan data Nasabah. Memiliki atribut:
+- `nomor_kartu` - nomor kartu nasabah
+- `nama` - nama nasabah
+- `saldo` - saldo nasabah
+
+2. **Tabel Transaksi**
+
+Menyimpan transaksi yang dilakukan oleh nasabah. Memiliki atribut:
+- `nomor_pengirim`: nomor kartu nasabah pengirim
+- `nomor_penerima`: nomor kartu nasabah penerima
+- `jumlah`: jumlah transaksi
+- `waktu`: waktu transaksi
+
+
+## REST Shared Session
+
+
+## Mekanisme Pembangkitan Token dan Expire Time
+
+1. **Pembangkitan Token**
+
+Token dibangkitkan ketika pengguna berhasil melakukan login ke aplikasi atau berhasil melakukan registerasi. Mekanisme pembangkitan token adalah sebagai berikut.
+- Website akan meng-generate sebuah akses token berupa string random 32 huruf.
+- Website mengambil data berupa browser, IP Address, username, serta expire time yaitu 60 menit dari dibuatnya token.
+- Akses token, browser, IP Address, username, dan expire time disimpan ke dalam database.
+- Akses token dan username disimpan ke cookies untuk di-validasi saat menjalankan aplikasi.
+
+2. **Expire Time**
+
+Setiap session memiliki expire time yang disimpan dalam database. Mekanisme pengecekan expire time adalah sebagai berikut.
+- Dilakukan pengambilan sesi yang sudah expire dari database, yaitu session yang memiliki nilai expire_time < waktu sekarang.
+- Session yang sudah di expire dihapus dari database.
+
+Pengecekan ini dilakukan saat pengguna me-load halaman apapun pada aplikasi.
+
+## Kelebihan dan Kelemahan Arsitektur
+
+
 ### Pembagian Tugas
-"Gaji buta dilarang dalam tugas ini. Bila tak mengerti, luangkan waktu belajar lebih banyak. Bila belum juga mengerti, belajarlah bersama-sama kelompokmu. Bila Anda sekelompok bingung, bertanyalah (bukan menyontek) ke teman seangkatanmu. Bila seangkatan bingung, bertanyalah pada asisten manapun."
-
-*Harap semua anggota kelompok mengerjakan SOAP dan REST API kedua-duanya*. Tuliskan pembagian tugas seperti berikut ini.
-
 REST :
 1. Validasi nomor kartu : 13516009, 13516018
 2. Transfer : 13516099
