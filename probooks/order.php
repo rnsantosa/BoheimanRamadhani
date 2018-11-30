@@ -323,31 +323,6 @@
         ";
       }
     ?>
-
-    <?php
-      $servername = "localhost";
-      $userdb = "root";
-      $password = "";
-      $dbname = "probooks";
-      $username = $_POST['username'];
-      $bookid = $_POST['bookid'];
-      $count = $_POST['count'];
-      
-      // Create connection
-      $conn = new mysqli($servername, $userdb, $password, $dbname);
-      // Check connection
-      if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-      }
-      $sql = "SELECT max(id) max_id FROM ordering";
-      $result = $conn->query($sql);
-      if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $nomorTransaksi = $row['max_id'];
-      }
-      $conn->close();   
-    ?>;
-
     <script>
 
       function getDetail(id){
@@ -367,6 +342,7 @@
       }
 
       function order(id) {
+        var orderingid;
         document.getElementById("loader").style.display = "block";
         var modal = document.getElementById("myModal");
         modal.style.display = "block";
@@ -383,13 +359,13 @@
           if (this.readyState == 4 && this.status == 200) {
             console.log(xmlhttp.responseText);
             if(xmlhttp.responseText == true){
-              addpembelian(id, quantity);
-              addtoordering(<?php echo("'$username'") ?>, id, quantity);
+              document.getElementById("loader").style.display = "none";
+              var orderingid = addtoordering(<?php echo("'$username'") ?>, id, quantity);
               var modal = document.getElementById("myModal");
               var btn = document.getElementById("MyBtn");
               var span = document.getElementsByClassName("close")[0];
-              document.getElementsByClassName("modal-text")[0].innerHTML ="<img src='public/img/tick.png' class='img-tick'><b>Pemesanan Berhasil!<br></b>Nomor Transaksi : <?php echo $nomorTransaksi; ?>";
-              document.getElementById("loader").style.display = "none";
+              document.getElementsByClassName("modal-text")[0].innerHTML ="<img src='public/img/tick.png' class='img-tick'><b>Pemesanan Berhasil!<br></b>Nomor Transaksi : <span id='nomortrans'></span>";
+              addpembelian(id, quantity);
               modal.style.display = "block";                                                    
               span.onclick = function() {
                 modal.style.display = "none";
@@ -438,6 +414,7 @@
         xhttp.onreadystatechange = function(){
           if (this.readyState == 4 && this.status == 200) {
             console.log(this.responseText);
+            document.getElementById("nomortrans").innerHTML = this.responseText;
           }
         };
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
