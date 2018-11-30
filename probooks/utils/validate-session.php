@@ -58,9 +58,11 @@
         }
 
         $now = microtime(true);
+        // echo($now . "<br>");
         $retrieve = "SELECT * FROM session WHERE expire_time < $now";
         $result = mysqli_query($con, $retrieve);
         while ($row = $result->fetch_assoc()) {
+            // echo ($row['session_id'] . "<br>");
             deleteSession($con, $row['session_id']);
         }
     }
@@ -69,10 +71,10 @@
         // Called after connecting to Probooks database
         $del = "DELETE FROM `session` WHERE (`session_id` = '$access_token')";
         $delete = mysqli_query($con, $del);
-        if ($delete) {
-            header('Location: ../login.php');
-            exit();
-        } else {
+        if (!$delete) {
+        //     header('Location: ../login.php');
+        //     exit();
+        // } else {
             echo "session delete error";
         }
     }

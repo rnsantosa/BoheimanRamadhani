@@ -1,4 +1,6 @@
 <?php
+require_once 'utils/validate-session.php';
+
 // check whether user is already logged in or not
 $username = $_COOKIE['username'];
 $access_token = $_COOKIE['access_token'];

@@ -9,7 +9,7 @@
     $access_token = $_COOKIE['access_token'];
     
     validate($access_token, $username, null);
-    // checkSession();
+    checkSession();
     
     setcookie('access_token', $access_token, time() + 600, '/');
     setcookie('username', $username, time() + 600, '/');
