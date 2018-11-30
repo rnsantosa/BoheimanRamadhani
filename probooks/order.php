@@ -88,7 +88,7 @@
           $response = $client->__soapCall("getDetail", $params);
           $detail = json_encode($response);
           $detail = json_decode($detail, true);
-
+          // var_dump($detail);
 
           // CONNECT TO PROBOOKS DATABASE
           $con = mysqli_connect("localhost","root","","probooks");
@@ -163,8 +163,13 @@
             echo"$kategories<br>";
           }
           
+          if($detail['harga'] > 0){
+            echo " <a class='harga'> Harga: Rp {$detail['harga']} </a><br>";
+          }else{
+            echo " <a class='harga'> NOT FOR SALE </a><br>";
+          }
+
           echo "
-                      <a class='harga'> Harga: Rp {$detail['harga']} </a><br>
                   </td>
                   <td class='picture'>
                       <img src='{$detail['gambar']}' class='img-right'>
@@ -209,35 +214,35 @@
               </table>
           ";
 
-          echo "
-              <h3>Order</h3>
-              Jumlah: 
-              <select id='dropdown'>
-                  <option value='1'>1</a>
-                  <option value='2'>2</a>
-                  <option value='3'>3</a>
-                  <option value='4'>4</a>
-                  <option value='5'>5</a>
-              </select>
-              <br>
-              <button id='myBtn' type='button' onclick='order(\"$bookid\")'>Order</button>
-              <br>
-              <div id='MyBtn'>
-                  <div id='myModal' class='modal'>
-                      <div class='modal-content'>
-                          <span class='close'>&times;</span>
-                          <br>
-                          <p class='modal-text'>
-                              <img src='public/img/tick.png' class='img-tick'>
-                              <b>Pemesanan Berhasil!<br></b>
-                              Nomor Transaksi : {$num}
-                          </p>
-                      </div>
-                  </div>
-              </div>
-              
-              
-          ";
+          if($detail['harga'] > 0){
+            echo "
+                <h3>Order</h3>
+                Jumlah: 
+                <select id='dropdown'>
+                    <option value='1'>1</a>
+                    <option value='2'>2</a>
+                    <option value='3'>3</a>
+                    <option value='4'>4</a>
+                    <option value='5'>5</a>
+                </select>
+                <br>
+                <button id='myBtn' type='button' onclick='order(\"$bookid\")'>Order</button>
+                <br>
+                <div id='MyBtn'>
+                    <div id='myModal' class='modal'>
+                        <div class='modal-content'>
+                            <span class='close'>&times;</span>
+                            <br>
+                            <p class='modal-text'>
+                                <img src='public/img/tick.png' class='img-tick'>
+                                <b>Pemesanan Berhasil!<br></b>
+                                Nomor Transaksi : {$num}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            ";
+          }
           
       ?>
 
@@ -259,11 +264,9 @@
         "arg0" => $detail['kategori']
       );
       $response = $client->__soapCall("getRecommendation", $params);
-    //   var_dump($response);
-
         // Call SOAP for GetDetail
         $params = array(
-            "arg0" => "z-VfDeuhq6kC"
+            "arg0" => $response
         );
         $response = $client->__soapCall("getDetail", $params);
         $rec = json_encode($response);

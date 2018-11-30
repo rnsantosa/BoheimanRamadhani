@@ -27,7 +27,7 @@ CREATE TABLE `kategori` (
   `kat` varchar(45) NOT NULL,
   PRIMARY KEY (`idbook`,`kat`),
   CONSTRAINT `idbook` FOREIGN KEY (`idbook`) REFERENCES `penjualan` (`idbook`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,7 +52,7 @@ CREATE TABLE `penjualan` (
   `harga` float DEFAULT NULL,
   `totalpenjualan` int(11) DEFAULT NULL,
   PRIMARY KEY (`idbook`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
