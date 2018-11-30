@@ -368,7 +368,14 @@ public class BookServiceImpl implements BookService {
 	public String getRecommendation(Object obj) throws IOException {
 		Class cls = obj.getClass();
 		System.out.println("The type of the object is: " + cls.getName());
+
+		if (obj instanceof String) {
+			System.out.println("MANTAP");
+		} else {
+			System.out.println("CACAT");
+		}
 		 
+		return ("hehe");
 	}
 		// // String query = String.format("SELECT orders.orderid, orders.bookid, orders.kategori, orders.total FROM (SELECT *, sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) orders WHERE orders.total = (SELECT Max(total) FROM(SELECT sum(jumlah) total FROM orderbook WHERE kategori = '%s' GROUP BY bookid) jumlahbook)" , kategori, kategori);
 		// String query = "SELECT idbook FROM kategori NATURAL JOIN penjualan WHERE ";
