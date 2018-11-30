@@ -26,15 +26,51 @@ Diharapkan dengan tugas ini anda dapat mengerti:
 8. Pada *readme* terdapat penjelasan mengenai pembagian tugas masing-masing anggota (lihat formatnya pada bagian **pembagian tugas**).
 9. Merge request dari repository anda ke repository ini dengan format **Nama kelompok** - **NIM terkecil** - **Nama Lengkap dengan NIM terkecil** sebelum **Jumat, 30 November 2018 pukul 23.59**.
 
-### Basis Data
+## Basis Data
+Terdapat 3 buah basis data yang digunakan pada program ini, yaitu database probooks sebagai database aplikasi, database book sebagai database web-service book, dan database bank sebagai database web-service bank.
 
-### REST Shared Session
+#### Database Probooks
+1. Tabel User: menyimpan data pengguna. Memiliki atribut: username, password, name, phone, address, email, image, dan cardnumber.
 
-### Mekanisme Pembangkitan Token
+2. Tabel Ordering: menyimpan order yang dilakukan setiap pengguna aplikasi melakukan pembelian. Memiliki atribut:
+- id: kode id untuk suatu order
+- username: username user yang melakukan order
+- bookid: id dari buku yang dibeli
+- count: jumlah buku yang dibeli
+- date: waktu saat dilakukan order
 
-### Kelebihan dan Kelemahan Arsitektur
+3. Tabel Review: menyimpan review terhadap order yang dilakukan pengguna. Memiliki atribut:
+- id: id suatu review
+- orderid: foreign key untuk tabel ordering
+- content: isi dari review
+- rating: nilai rating yang diberikan
 
-### Deskripsi Tugas
+4. Tabel Session: Menyimpan data yang dibutuhkan untuk membuat mekanisme akses token. Memiliki atribut:
+- session_id: Akses token pengguna, berupa string random 32 huruf
+- username: username dari pengguna, foreign key ke tabel user
+- browser: user agent yang digunakan pengguna
+- ip_adress: ip address dari pengguna
+- expire_time: waktu expire dari suatu sesi
+
+## REST Shared Session
+
+## Mekanisme Pembangkitan Token dan Expire Time
+1. Pembangkitan Token
+Token dibangkitkan ketika pengguna berhasil melakukan login ke aplikasi atau berhasil melakukan registerasi. Mekanisme pembangkitan token adalah sebagai berikut.
+- Website akan meng-generate sebuah akses token berupa string random 32 huruf. 
+- Website mengambil data berupa browser, IP Address, username, serta expire time yaitu 60 menit dari dibuatnya token.
+- Akses token, browser, IP Address, username, dan expire time disimpan ke dalam database.
+- Akses token dan username disimpan ke cookies untuk di-validasi saat menjalankan aplikasi.
+
+2. Expire Time
+Setiap session memiliki expire time yang disimpan dalam database. Mekanisme pengecekan expire time adalah sebagai berikut.
+- Dilakukan pengambilan sesi yang sudah expire dari database, yaitu session yang memiliki nilai expire_time < waktu sekarang.
+- Session yang sudah di expire dihapus dari database.
+Pengecekan ini dilakukan saat pengguna me-load halaman apapun pada aplikasi.
+
+## Kelebihan dan Kelemahan Arsitektur
+
+## Deskripsi Tugas
 ![](temp/architecture.png)
 
 Pada tugas 2, Anda diminta untuk mengembangkan aplikasi toko buku online sederhana yang sudah Anda buat pada tugas 1. Arsitektur aplikasi diubah agar memanfaatkan 2 buah webservice, yaitu webservice bank dan webservice buku. Baik aplikasi maupun kedua webservice, masing-masing memiliki database sendiri. Jangan menggabungkan ketiganya dalam satu database. Anda juga perlu mengubah beberapa hal pada aplikasi pro-book yang sudah Anda buat.
