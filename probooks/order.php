@@ -264,6 +264,7 @@
         "arg0" => $detail['kategori']
       );
       $response = $client->__soapCall("getRecommendation", $params);
+      var_dump($response);
         // Call SOAP for GetDetail
         $params = array(
             "arg0" => $response

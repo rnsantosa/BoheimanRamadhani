@@ -1,6 +1,5 @@
 <?php 
     function validate($access_token, $username, $action) {
-        
         // Get current session data
         $browser = $_SERVER['HTTP_USER_AGENT'];
         $ip = $_SERVER['REMOTE_ADDR'];

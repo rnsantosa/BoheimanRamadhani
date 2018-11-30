@@ -10,6 +10,7 @@
         setcookie('access_token', $access_token, time() + 600, '/');
         setcookie('username', $username, time() + 600, '/');
     }
+
     checkSession();
 
     

@@ -15,9 +15,15 @@
     $params = array(
       "arg0" => $_POST['judul']
     );
-    $response = $client->__soapCall("searchBook", $params);
-    $books = json_encode($response);
-    echo($books);
+    try {
+      $response = $client->__soapCall("searchBook", $params);  
+      $books = json_encode($response);
+      echo($books);
+    } catch (SoapFault $sf) { 
+      echo "Soapfault"; 
+    } catch (Exception $e) { 
+      echo "Exception"; 
+    }
   } elseif (isset($_POST['add'])) {
     $params = array(
       "arg0" => $_POST['idbook'],

@@ -65,6 +65,18 @@
       
       </div>  
       <div class="content">
+        <div class="container text-align-left result-row" id="hasil0" style="display: none;">
+        <table class="full-width" style="overflow: auto;">
+            <tr>
+                <td id="search-title">
+                    <h1 class="text-orange">Search Result</h2>
+                </td>
+                <td id="found-count" class="text-align-right vertical-align-bottom">
+                    <p>Found <span id="num-rows">0</span> result(s)</p>
+                </td>
+            </tr>
+        </table>
+        </div>
         <div class="container text-align-left" ng-if="probook.books.length > 0">
         <table class="full-width">
             <tr>
@@ -75,7 +87,7 @@
                     <p>Found <span id="num-rows">{{probook.books.length}}</span> result(s)</p>
                 </td>
             </tr>
-        </table>  
+        </table>
         </div>
           <!-- <div class="container"> -->
           <div class="result-row" ng-repeat="book in probook.books">  

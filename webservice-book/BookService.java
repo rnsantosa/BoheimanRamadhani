@@ -31,6 +31,6 @@ public interface BookService {
 	public Book getDetail(String id) throws IOException;
 
 	@WebMethod
-	public String getRecommendation(String[] kategori);
+	public String getRecommendation(Object kategori) throws IOException;
 
 }
