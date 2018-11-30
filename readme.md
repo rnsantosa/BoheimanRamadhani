@@ -10,10 +10,6 @@ Diharapkan dengan tugas ini anda dapat mengerti:
 * Membuat web application yang akan memanggil web service secara REST dan SOAP.
 * Memanfaatkan web service eksternal (API)
 
-## Anggota Tim
-
-Setiap kelompok beranggotakan **3 orang dari kelas yang sama**. Jika jumlah mahasiswa dalam satu kelas modulo 3 menghasilkan 1, maka hanya 1 kelompok terdiri dari 4 mahasiswa. Jika jumlah mahasiswa modulo 3 menghasilkan 2, maka ada dua kelompok yang beranggotakan 4 orang. Seluruh anggota kelompok **harus berbeda dengan tugas 1**.
-
 ## Petunjuk Pengerjaan
 
 1. Buatlah organisasi pada gitlab dengan format "IF3110-2018-KXX-nama kelompok", dengan XX adalah nomor kelas.
@@ -22,13 +18,21 @@ Setiap kelompok beranggotakan **3 orang dari kelas yang sama**. Jika jumlah maha
 4. Ubah hak akses repository hasil Fork anda menjadi **private**.
 5. [DELIVERABLE] Buat tugas sesuai spesifikasi dan silakan commit pada repository anda (hasil fork). Lakukan berberapa commit dengan pesan yang bermakna, contoh: `add register form`, `fix logout bug`, jangan seperti `final`, `benerin dikit`. Disarankan untuk tidak melakukan commit dengan perubahan yang besar karena akan mempengaruhi penilaian (contoh: hanya melakukan satu commit kemudian dikumpulkan). Sebaiknya commit dilakukan setiap ada penambahan fitur. **Commit dari setiap anggota tim akan mempengaruhi penilaian individu.** Jadi, setiap anggota tim harus melakukan sejumlah commit yang berpengaruh terhadap proses pembuatan aplikasi.
 6. Hapus bagian yang tidak perlu dari *readme* ini.
-7. [DELIVERABLE] Berikan penjelasan mengenai hal di bawah ini pada bagian **Penjelasan** dari *readme* repository git Anda: ((masih spek taun lalu))
+7. [DELIVERABLE] Berikan penjelasan mengenai hal di bawah ini pada bagian **Penjelasan** dari *readme* repository git Anda:
     - Basis data dari sistem yang Anda buat, yaitu basis data aplkasi pro-book, webservice bank, dan webservice buku.
     - Konsep *shared session* dengan menggunakan REST.
     - Mekanisme pembangkitan token dan expiry time pada aplikasi Anda.
     - Kelebihan dan kelemahan dari arsitektur aplikasi tugas ini, dibandingkan dengan aplikasi monolitik (login, CRUD DB, dll jadi dalam satu aplikasi)
 8. Pada *readme* terdapat penjelasan mengenai pembagian tugas masing-masing anggota (lihat formatnya pada bagian **pembagian tugas**).
 9. Merge request dari repository anda ke repository ini dengan format **Nama kelompok** - **NIM terkecil** - **Nama Lengkap dengan NIM terkecil** sebelum **Jumat, 30 November 2018 pukul 23.59**.
+
+### Basis Data
+
+### REST Shared Session
+
+### Mekanisme Pembangkitan Token
+
+### Kelebihan dan Kelemahan Arsitektur
 
 ### Deskripsi Tugas
 ![](temp/architecture.png)
@@ -136,29 +140,33 @@ Anda tidak dituntut untuk mengerjakan ini. Fokus terlebih dahulu menyelesaikan s
 *Harap semua anggota kelompok mengerjakan SOAP dan REST API kedua-duanya*. Tuliskan pembagian tugas seperti berikut ini.
 
 REST :
-1. Validasi nomor kartu : 1351xxxx
-2. ...
+1. Validasi nomor kartu : 13516009, 13516015
+2. Transfer : 13516099
 
 SOAP :
-1. Add Produce : 1351xxxx
-2. Fungsionalitas Y : 1351xxxx
-3. ...
+1. Pencarian Buku : 
+2. Pengambilan Detail : 13516009
+3. Pembelian Buku :
+4. Rekomendasi : 
 
 Perubahan Web app :
 1. Halaman Search : 
-2. Halaman X :
-3. ...
+2. Halaman Order :
+3. Halaman History : 13516009
+4. Halaman Profil : 13516009
+5. Halaman Registerasi : 13516009
 
 Bonus :
 1. Pembangkitan token HTOP/TOTP : 
 2. Validasi token : 
-3. ...
 
 ## About
 
-Asisten IF3110 2018
+Dibuat untuk memenuhi tugas IF3110 2018
 
-Audry | Erick | Holy | Kevin J. | Tasya | Veren | Vincent H.
+13516009 - Rahmat Nur Ibrahim Santosa 
+13516015 - Nira Ramadhani Rizki
+13516099 - Raka Hadhyana
 
 Dosen : Yudistira Dwi Wardhana | Riza Satria Perdana | Muhammad Zuhri Catur Candra
 
