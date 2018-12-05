@@ -214,8 +214,8 @@ Bonus :
 
 Dibuat untuk memenuhi tugas IF3110 2018
 
-13516009 - Rahmat Nur Ibrahim Santosa
-13516018 - Nira Rizki Ramadhani
-13516099 - Raka Hadhyana
+* 13516009 - Rahmat Nur Ibrahim Santosa
+* 13516018 - Nira Rizki Ramadhani
+* 13516099 - Raka Hadhyana
 
 Dosen : Yudistira Dwi Wardhana | Riza Satria Perdana | Muhammad Zuhri Catur Candra
